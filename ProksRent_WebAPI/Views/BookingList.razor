@@ -1,0 +1,86 @@
+﻿@page "/bookings"
+@using ProksRent_WebAPI.DTOs
+@using ProksRent_WebAPI.Services
+@inject IBookingService BookingService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Bookings</PageTitle>
+
+@if (isLoading)
+{
+    <p>Loading...</p>
+}
+else if (errorMessage != null)
+{
+    <p class="text-danger">@errorMessage</p>
+}
+else
+{
+    <button class="btn btn-success mb-2" @onclick="AddBooking">Add Booking</button>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Confirmed</th>
+                <th>Car</th>
+                <th>User</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var booking in bookings)
+            {
+                <tr>
+                    <td>@booking.StartDate.ToShortDateString()</td>
+                    <td>@booking.EndDate.ToShortDateString()</td>
+                    <td>@(booking.IsConfirmed ? "Yes" : "No")</td>
+                    <td>@booking.CarModel</td>
+                    <td>@booking.UserName</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" @onclick="() => EditBooking(booking.Id)">Edit</button>
+                        <button class="btn btn-danger btn-sm" @onclick="() => DeleteBooking(booking.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<BookingDto> bookings = new();
+    private bool isLoading = true;
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            bookings = (await BookingService.GetAllBookingsAsync()).ToList();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void AddBooking() => NavigationManager.NavigateTo("/edit-booking/0");
+    private void EditBooking(int id) => NavigationManager.NavigateTo($"/edit-booking/{id}");
+
+    private async Task DeleteBooking(int id)
+    {
+        try
+        {
+            await BookingService.DeleteBookingAsync(id);
+            bookings = (await BookingService.GetAllBookingsAsync()).ToList();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
+}

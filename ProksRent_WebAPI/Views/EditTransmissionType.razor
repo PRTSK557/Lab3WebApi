@@ -1,0 +1,48 @@
+﻿@page "/edit-transmissiontype/{Id:int}"
+@using ProksRent_WebAPI.DTOs
+@using ProksRent_WebAPI.Services
+@using Microsoft.JSInterop
+@inject ITransmissionTypeService TransmissionTypeService
+@inject NavigationManager NavigationManager
+
+<h3>@(Id == 0 ? "Add Transmission Type" : "Edit Transmission Type")</h3>
+
+<EditForm Model="transmissionType" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label class="form-label">Name</label>
+        <InputText class="form-control" @bind="transmissionType.Name" />
+    </div>
+
+    <button class="btn btn-primary" type="submit">Save</button>
+    <button class="btn btn-secondary ms-2" @onclick="Cancel">Cancel</button>
+</EditForm>
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private TransmissionTypeDto transmissionType = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id != 0)
+        {
+            var dto = await TransmissionTypeService.GetTransmissionTypeByIdAsync(Id);
+            if (dto != null)
+                transmissionType = dto;
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (Id == 0)
+            await TransmissionTypeService.AddTransmissionTypeAsync(transmissionType);
+        else
+            await TransmissionTypeService.UpdateTransmissionTypeAsync(transmissionType);
+
+        NavigationManager.NavigateTo("/transmissiontypes");
+    }
+
+    private void Cancel() => NavigationManager.NavigateTo("/transmissiontypes");
+}

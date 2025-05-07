@@ -1,0 +1,29 @@
+﻿@page "/cars"
+@using ProksRent_WebAPI.DTOs
+@using ProksRent_WebAPI.Services
+@using Microsoft.JSInterop
+@inject ICarService CarService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Delete Car</PageTitle>
+
+<h3>Are you sure you want to delete this car?</h3>
+
+<button class="btn btn-danger" @onclick="DeleteCar">Delete</button>
+<button class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+
+@code {
+    [Parameter]
+    public int CarId { get; set; }
+
+    private async Task DeleteCar()
+    {
+        await CarService.DeleteCarAsync(CarId);
+        NavigationManager.NavigateTo("/cars");
+    }
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("/cars");
+    }
+}

@@ -1,0 +1,118 @@
+﻿@page "/brands"
+@using ProksRent_WebAPI.DTOs
+@using ProksRent_WebAPI.Services
+@using Microsoft.JSInterop
+@inject IBrandService BrandService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Brands</PageTitle>
+
+@if (isLoading)
+{
+    <p>Loading...</p>
+}
+else if (errorMessage != null)
+{
+    <p class="text-danger">@errorMessage</p>
+}
+else
+{
+    <button class="btn btn-success mb-2" @onclick="AddBrand">Add Brand</button>
+    <table class="table">
+        <thead>
+            <tr>
+                <th @onclick="() => SortBy(nameof(BrandDto.Name))">Name @if (sortField == nameof(BrandDto.Name)) { <span>@(sortAscending ? "↑" : "↓")</span> }</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var brand in PagedBrands)
+            {
+                <tr>
+                    <td>@brand.Name</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" @onclick="() => EditBrand(brand.Id)">Edit</button>
+                        <button class="btn btn-danger btn-sm" @onclick="() => DeleteBrand(brand.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div>
+        <button class="btn btn-secondary" @onclick="PreviousPage" disabled="@(!CanGoPrevious)">Previous</button>
+        <span> Page @currentPage of @totalPages </span>
+        <button class="btn btn-secondary" @onclick="NextPage" disabled="@(!CanGoNext)">Next</button>
+    </div>
+}
+
+@code {
+    private List<BrandDto> brands = new();
+    private bool isLoading = true;
+    private string? errorMessage;
+
+    private int currentPage = 1;
+    private int pageSize = 5;
+
+    private string sortField = nameof(BrandDto.Name);
+    private bool sortAscending = true;
+
+    private IEnumerable<BrandDto> PagedBrands => brands
+        .OrderBy(b => sortField == nameof(BrandDto.Name) ? b.Name : "")
+        .ThenBy(b => b.Id)
+        .Skip((currentPage - 1) * pageSize)
+        .Take(pageSize);
+
+    private int totalPages => (int)Math.Ceiling((double)brands.Count / pageSize);
+    private bool CanGoPrevious => currentPage > 1;
+    private bool CanGoNext => currentPage < totalPages;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            brands = (await BrandService.GetAllBrandsAsync()).ToList();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void AddBrand() => NavigationManager.NavigateTo("/edit-brand/0");
+    private void EditBrand(int id) => NavigationManager.NavigateTo($"/edit-brand/{id}");
+
+    private async Task DeleteBrand(int id)
+    {
+        try
+        {
+            await BrandService.DeleteBrandAsync(id);
+            brands = (await BrandService.GetAllBrandsAsync()).ToList();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
+
+    private void NextPage() { if (CanGoNext) currentPage++; }
+    private void PreviousPage() { if (CanGoPrevious) currentPage--; }
+
+    private void SortBy(string field)
+    {
+        if (sortField == field)
+            sortAscending = !sortAscending;
+        else
+        {
+            sortField = field;
+            sortAscending = true;
+        }
+
+        brands = sortAscending
+            ? brands.OrderBy(b => b.Name).ToList()
+            : brands.OrderByDescending(b => b.Name).ToList();
+    }
+}
