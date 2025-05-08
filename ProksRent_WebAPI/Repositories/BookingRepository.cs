@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ProksRent_WebAPI.Models;
 using PROKSRent_WebAPI.Data;
 using PROKSRent_WebAPI.Models;
 

@@ -34,7 +34,5 @@ namespace ProksRent_WebAPI.Models
         public bool IsAvailable { get; set; } = true;
 
         public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
-        public double? Latitude { get; set; }
-        public double? Longitude { get; set; }
     }
 }

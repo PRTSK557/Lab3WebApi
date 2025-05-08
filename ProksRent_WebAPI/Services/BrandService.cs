@@ -1,6 +1,5 @@
 ﻿using ProksRent_WebAPI.DTOs;
 using ProksRent_WebAPI.Models;
-using ProksRent_WebAPI.Repositories;
 
 namespace ProksRent_WebAPI.Services
 {

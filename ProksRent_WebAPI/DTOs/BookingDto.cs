@@ -10,7 +10,7 @@
         public int CarId { get; set; }
         public string UserId { get; set; }
 
-        public string? CarModel { get; set; } // для зручності, необов'язково
-        public string? UserName { get; set; } // для зручності, необов'язково
+        public string? CarModel { get; set; } 
+        public string? UserName { get; set; } 
     }
 }

@@ -31,12 +31,15 @@ builder.Services.AddScoped<ITransmissionTypeService, TransmissionTypeService>();
 builder.Services.AddScoped<IFuelTypeRepository, FuelTypeRepository>();
 builder.Services.AddScoped<IFuelTypeService, FuelTypeService>();
 
+builder.Services.AddScoped<ICarRepository, CarRepository>();
+builder.Services.AddScoped<ICarService, CarService>();
+
 // Додати політику CORS (якщо фронт і бекенд працюють окремо)
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
+    options.AddPolicy("AllowBlazorApp", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins("http://localhost:7157")
               .AllowAnyMethod()
               .AllowAnyHeader();
     });
@@ -53,7 +56,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors("AllowAll");
+app.UseCors("AllowBlazorApp");
+
 
 app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
