@@ -268,6 +268,28 @@ namespace ProksRent_WebAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Brands");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Audi"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Mercedes-Benz"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "BMW"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Volkswagen"
+                        });
                 });
 
             modelBuilder.Entity("ProksRent_WebAPI.Models.Car", b =>
@@ -296,12 +318,6 @@ namespace ProksRent_WebAPI.Migrations
 
                     b.Property<bool>("IsAvailable")
                         .HasColumnType("bit");
-
-                    b.Property<double?>("Latitude")
-                        .HasColumnType("float");
-
-                    b.Property<double?>("Longitude")
-                        .HasColumnType("float");
 
                     b.Property<string>("Model")
                         .IsRequired()
@@ -342,6 +358,23 @@ namespace ProksRent_WebAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("FuelTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Бензин"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Дизель"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Електричний"
+                        });
                 });
 
             modelBuilder.Entity("ProksRent_WebAPI.Models.TransmissionType", b =>
@@ -359,6 +392,18 @@ namespace ProksRent_WebAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TransmissionTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Механіка"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Автомат"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -417,13 +462,13 @@ namespace ProksRent_WebAPI.Migrations
                     b.HasOne("ProksRent_WebAPI.Models.Car", "Car")
                         .WithMany("Bookings")
                         .HasForeignKey("CarId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("PROKSRent_WebAPI.Models.ApplicationUser", "User")
                         .WithMany("Bookings")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Car");
@@ -436,19 +481,19 @@ namespace ProksRent_WebAPI.Migrations
                     b.HasOne("ProksRent_WebAPI.Models.Brand", "Brand")
                         .WithMany("Cars")
                         .HasForeignKey("BrandId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("ProksRent_WebAPI.Models.FuelType", "FuelType")
                         .WithMany("Cars")
                         .HasForeignKey("FuelTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("ProksRent_WebAPI.Models.TransmissionType", "TransmissionType")
                         .WithMany("Cars")
                         .HasForeignKey("TransmissionTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Brand");

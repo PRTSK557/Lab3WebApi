@@ -1,6 +1,4 @@
 ﻿using ProksRent_WebAPI.DTOs;
-using ProksRent_WebAPI.Models;
-using ProksRent_WebAPI.Repositories;
 using AutoMapper;
 using PROKSRent_WebAPI.Models;
 

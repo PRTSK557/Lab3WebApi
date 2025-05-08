@@ -13,11 +13,5 @@
         public int Seats { get; set; }
         public string? ImagePath { get; set; }
         public bool IsAvailable { get; set; }
-        public double? Latitude { get; set; }
-        public double? Longitude { get; set; }
-
-        public string? BrandName { get; set; }
-        public string? FuelTypeName { get; set; }
-        public string? TransmissionTypeName { get; set; }
     }
 }

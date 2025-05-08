@@ -13,7 +13,12 @@ namespace ProksRent_WebAPI.Profiles
             CreateMap<ApplicationUser, ApplicationUserDto>().ReverseMap();
             CreateMap<Booking, BookingDto>().ReverseMap();
             CreateMap<Brand, BrandDto>().ReverseMap();
-            CreateMap<Car, CarDto>().ReverseMap();
+            CreateMap<Car, CarDto>()
+                .ReverseMap()
+                .ForMember(dest => dest.Brand, opt => opt.Ignore())
+                .ForMember(dest => dest.FuelType, opt => opt.Ignore())
+                .ForMember(dest => dest.TransmissionType, opt => opt.Ignore())
+                .ForMember(dest => dest.Bookings, opt => opt.Ignore());
             CreateMap<FuelType, FuelTypeDto>().ReverseMap();
             CreateMap<TransmissionType, TransmissionTypeDto>().ReverseMap();
         }
